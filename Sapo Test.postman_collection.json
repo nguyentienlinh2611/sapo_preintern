@@ -1,0 +1,240 @@
+{
+	"info": {
+		"_postman_id": "a17a7708-8c99-4550-a787-168746cd6398",
+		"name": "Sapo Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "createProduct",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"product_name\": \"Laptop ASUS X159UR\",\n\t\"product_category_id\": null,\n\t\"product_category_name\": \"Laptop\",\n\t\"variants\": [\n\t\t{\n\t\t\t\"attributes\": [{\n\t\t\t\t\"attribute_value_id\": null,\n\t\t\t\t\"attribute_id\": null,\n\t\t\t\t\"attribute_name\": \"color\",\n\t\t\t\t\"attribute_value\": \"grey\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"attribute_value_id\": null,\n\t\t\t\t\"attribute_id\": null,\n\t\t\t\t\"attribute_name\": \"size\",\n\t\t\t\t\"attribute_value\": \"15,6 inch\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"attribute_value_id\": null,\n\t\t\t\t\"attribute_id\": null,\n\t\t\t\t\"attribute_name\": \"memory\",\n\t\t\t\t\"attribute_value\": \"1TB HDD\"\n\t\t\t}]\n\t\t}\n\t]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/product",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "createProduct Copy",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"product_name\": \"Laptop ASUS X445UR\",\n\t\"product_category_id\": 28,\n\t\"product_category_name\": \"Laptop\",\n\t\"variants\": [\n\t\t{\n\t\t\t\"attributes\": [{\n\t\t\t\t\"attribute_id\": 124,\n\t\t\t\t\"attribute_name\": \"color\",\n\t\t\t\t\"attribute_value_id\": 112,\n\t\t\t\t\"attribute_value\": \"grey\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"attribute_id\": 125,\n\t\t\t\t\"attribute_name\": \"size\",\n\t\t\t\t\"attribute_value_id\": 115,\n\t\t\t\t\"attribute_value\": \"16 inch\"\n\t\t\t}]\n\t\t},\n\t\t{\n\t\t\t\"attributes\": [{\n\t\t\t\t\"attribute_id\": 124,\n\t\t\t\t\"attribute_name\": \"color\",\n\t\t\t\t\"attribute_value_id\": null,\n\t\t\t\t\"attribute_value\": \"black\"\n\t\t\t},\n\t\t\t{\n\t\t\t\t\"attribute_id\": null,\n\t\t\t\t\"attribute_name\": \"brand\",\n\t\t\t\t\"attribute_value_id\": null,\n\t\t\t\t\"attribute_value\": \"ASUS\"\n\t\t\t}]\n\t\t}\n\t]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/product",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getProductDetail",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/product/:product_id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						":product_id"
+					],
+					"variable": [
+						{
+							"key": "product_id",
+							"value": "36"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getProduct",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/product",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "updateProduct",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"product_id\": 36,\r\n    \"product_name\": \"Laptop ASUS X445UR\",\r\n    \"product_category_id\": 28,\r\n    \"variants\": [\r\n           {\r\n            \"variant_id\": 36,\r\n            \"attributes\": [\r\n                {\r\n                    \"attribute_id\": 127,\r\n                    \"attribute_name\": \"brand\",\r\n                    \"attribute_value_id\": 116,\r\n                    \"attribute_value\": \"ASUS\"\r\n                },\r\n                {\r\n                    \"attribute_id\": 124,\r\n                    \"attribute_name\": \"color\",\r\n                    \"attribute_value_id\": 117,\r\n                    \"attribute_value\": \"black\"\r\n                }\r\n            ],\r\n            \"active_flg\": 0\r\n        },\r\n        {\r\n            \"variant_id\": null,\r\n            \"attributes\": [\r\n                {\r\n                    \"attribute_id\": 127,\r\n                    \"attribute_name\": \"brand\",\r\n                    \"attribute_value_id\": null,\r\n                    \"attribute_value\": \"ACER\"\r\n                },\r\n                {\r\n                    \"attribute_id\": 124,\r\n                    \"attribute_name\": \"color\",\r\n                    \"attribute_value_id\": null,\r\n                    \"attribute_value\": \"white\"\r\n                }\r\n            ],\r\n            \"active_flg\": 1\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/product",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deleteProduct",
+			"request": {
+				"method": "DELETE",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8000/product/:product_id",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8000",
+					"path": [
+						"product",
+						":product_id"
+					],
+					"variable": [
+						{
+							"key": "product_id",
+							"value": ""
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
