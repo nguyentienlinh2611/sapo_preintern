@@ -33,11 +33,11 @@ public class productController {
     @GetMapping
     public ResponseEntity<?> getProducts() {
         ResponseModel responseModel = productService.getProducts();
-        return new ResponseEntity(responseModel.getData(), HttpStatus.OK);
+        return new ResponseEntity<>(responseModel.getData(), HttpStatus.OK);
     }
 
-    @GetMapping(path="/{productId}")
-    public ResponseEntity<?> getProducts( @PathVariable("productId") Integer productId) {
+    @GetMapping(path="/{product_id}")
+    public ResponseEntity<?> getProducts( @PathVariable("product_id") Integer productId) {
         ResponseModel responseModel = productService.getProducts(productId);
         return new ResponseEntity(responseModel.getData(), HttpStatus.OK);
     }
@@ -48,8 +48,9 @@ public class productController {
         return new ResponseEntity(responseModel.getData(), HttpStatus.OK);
     }
 
-    @DeleteMapping
-    public ResponseEntity<?> deleteProduct() {
-        return new ResponseEntity(HttpStatus.OK);
+    @DeleteMapping(path="/{product_id}")
+    public ResponseEntity<?> deleteProduct(@PathVariable("product_id") Integer productId) {
+        productService.deleteProduct(productId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

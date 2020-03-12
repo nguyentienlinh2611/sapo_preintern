@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,15 +32,14 @@ public class ProductService {
     @Autowired
     private CategoriesRepository categoriesRepository;
 
-    public ResponseModel createCategory(CategoryModel newCategory) {
+    public Categories createCategory(CategoryModel newCategory) {
         Categories categories = new Categories();
         categories.setCategoryName(newCategory.getCategoryName());
         categories.setActiveFlg(1);
-        Categories newCategories = categoriesRepository.save(categories);
-        return new ResponseModel(HttpStatus.OK.value(), newCategories);
+        return categoriesRepository.save(categories);
     }
 
-    public AttributeValue checkIsExistAttribute(AttributeModel newAttribute) {
+    public AttributeValue checkAttribute(AttributeModel newAttribute) {
         Attribute newAtt = new Attribute();
         AttributeValue newAttValue = new AttributeValue();
         //Neu da ton tai attribute_value
@@ -73,11 +73,8 @@ public class ProductService {
         //Them thong tin san pham
         //Tao category neu chua ton tai category nay
         if (newProduct.getProductCategoryId() == null && !StringUtils.isEmpty(newProduct.getProductCategoryName())) {
-            Categories categories = new Categories();
-            categories.setCategoryName(newProduct.getProductCategoryName());
-            categories.setActiveFlg(1);
-            Categories newCategories = categoriesRepository.save(categories);
-            product.setProductCategoryId(newCategories.getCategoryId());
+            Categories newCatergory = createCategory(new CategoryModel(newProduct.getProductCategoryName()));
+            product.setProductCategoryId(newCatergory.getCategoryId());
         } else product.setProductCategoryId(newProduct.getProductCategoryId());
         product.setProductName(newProduct.getProductName());
         product.setActiveFlg(1);
@@ -88,36 +85,13 @@ public class ProductService {
             if (item.getAttributes().size() > 3)
                 throw new RuntimeException("Khong the tao qua 3 thuoc tinh cho mot phien ban!");
             item.getAttributes().forEach(att -> {
-                Attribute attribute = new Attribute();
-                AttributeValue newAttValue = new AttributeValue();
-                //Neu da ton tai attribute_value
-                if (att.getAttributeValueId() != null) {
-                    newAttValue = attributeValueRepository.findById(att.getAttributeValueId()).orElseThrow(() -> new RuntimeException("Không tìm thấy thuộc tính này"));
-                    if (!newAttValue.getAttribute().getAttributeId().equals(att.getAttributeId()) || !newAttValue.getAttributeValue().equals(att.getAttributeValue())) {
-                        throw new RuntimeException("Du lieu khong phu hop!");
-                    }
-                } else {
-                    //Neu ton tai attribute nhung chua co attribute_value
-                    if (att.getAttributeId() != null) {
-                        attribute = attributeRepository.findById(att.getAttributeId()).orElseThrow(() -> new RuntimeException("Khong tim thay thuoc tinh nay!"));
-                        if (!attribute.getAttributeName().equals(att.getAttributeName())) {
-                            throw new RuntimeException("Du lieu khong phu hop!");
-                        }
-                        newAttValue.setAttributeValue(att.getAttributeValue());
-                        attribute.addAttValues(newAttValue);
-                    } else {
-                        attribute.setAttributeName(att.getAttributeName());
-                        newAttValue.setAttributeValue(att.getAttributeValue());
-                        attribute.addAttValues(newAttValue);
-                        attributeRepository.save(attribute);
-                    }
-                }
+                AttributeValue newAttValue = checkAttribute(att);
                 newVariant.addAttValue(newAttValue);
             });
             //variantRespository.save(newVariant);
             product.addVariants(newVariant);
-            productRepository.save(product);
         });
+        productRepository.save(product);
         //Luu thong tin san pham
         //Product res = productRepository.save(product);
         return new ResponseModel(HttpStatus.OK.value(), "Them san pham moi thanh cong!");
@@ -137,38 +111,46 @@ public class ProductService {
     @Transactional
     public ResponseModel updateProduct(ProductModel updatedProduct) {
         Product product = productRepository.findById(updatedProduct.getProductId()).orElseThrow(() -> new RuntimeException("Khong tim thay san pham can cap nhat!"));
+        //Update info product
         if (updatedProduct.getProductName() != null && !product.getProductName().equals(updatedProduct.getProductName())) {
             product.setProductName(updatedProduct.getProductName());
         }
+        //Update category of product
         if (updatedProduct.getProductCategoryId() != null && !updatedProduct.getProductCategoryId().equals(product.getProductCategoryId())) {
             Optional<Categories> category = categoriesRepository.findById(updatedProduct.getProductCategoryId());
             if (category.isPresent() && category.get().getCategoryName().equals(updatedProduct.getProductCategoryName())) {
                 product.setProductCategoryId(updatedProduct.getProductCategoryId());
             } else if (!category.isPresent()) {
-                ResponseModel resCatergory = createCategory(new CategoryModel(updatedProduct.getProductCategoryName()));
-                final Categories result = (Categories) resCatergory.getData();
-                product.setProductCategoryId(result.getCategoryId());
-            } else throw new RuntimeException("Danh muc cap nhat khong hop le!");
+                Categories newCatergory = createCategory(new CategoryModel(updatedProduct.getProductCategoryName()));
+                product.setProductCategoryId(newCatergory.getCategoryId());
+            } else throw new RuntimeException("Ten danh muc cap nhat khong hop le!");
         }
+        //Update variant of product
         updatedProduct.getVariants().forEach(item -> {
             Variant variant = product.getVariants().stream().filter(var -> var.getVariantId().equals(item.getVariantId())).findFirst().orElse(null);
             if (variant != null) {
                 variant.removeAllAttValue();
                 item.getAttributes().forEach(att->{
-                    checkIsExistAttribute(att);
-                    variant.addAttValue(checkIsExistAttribute(att));
+                    AttributeValue newAtt = checkAttribute(att);
+                    variant.addAttValue(newAtt);
                 });
             } else {
                 //Tao moi 1 variant cho san pham tren
                 Variant newVariant = new Variant();
                 newVariant.setActiveFlg(1);
                 item.getAttributes().forEach(att->{
-                    checkIsExistAttribute(att);
-                    newVariant.addAttValue(checkIsExistAttribute(att));
+                    AttributeValue newAtt = checkAttribute(att);
+                    newVariant.addAttValue(newAtt);
                 });
                 product.addVariants(newVariant);
             }
         });
         return new ResponseModel(HttpStatus.OK.value(), "Cap nhat san pham thanh cong!");
+    }
+
+    @DeleteMapping
+    public void deleteProduct(Integer productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Khong tim thay san pham can cap nhat!"));
+        productRepository.delete(product);
     }
 }
